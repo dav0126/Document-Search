@@ -172,7 +172,7 @@
 			  //(value["_source"]["file"]["extension"]).replace(/\"/g, "");
 			  
 			  
-			  html += "<tr><td>" + count + "</td><td>" + value["_source"]["file"]["filename"] + "</td><td>" + docu_type + "</td><td>" + value["highlight"]["content"] + "</td><td>" + "<a href="+glb_addr+":1234/data" + doc_name + "' target=_blank>" + "Download" + "</a></td></tr>";
+			  html += "<tr><td>" + count + "</td><td>" + value["_source"]["file"]["filename"] + "</td><td>" + docu_type + "</td><td>" + value["highlight"]["content"] + "</td><td>" + "<a href='"+glb_addr+":1234/data" + doc_name + "' target=_blank>" + "Download" + "</a></td></tr>";
             
 			});
             html += "</table>";

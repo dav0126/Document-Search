@@ -1,0 +1,69 @@
+운송경로,Route,Transportation lane
+메타,meta,meta#,dataware meta
+플랫폼,Platfrom
+스마트,Smart
+스마트폰,Smartphone,Smart phone
+창업진흥원,창진원
+중대본,중앙재난안전대책본부
+방대본,중앙방역대책본부
+중수본,중앙사고수습본부
+코로나,코로나19,코로나 19,Covid-19,코로나-19,Corona virus,신종 코로나 바이러스,코로나바이러스,코로나 바이러스,우한 폐렴,2019-nCov,2019-Novel CoronaVirus,CoronaVirus,신종 코로나 바이러스 감염즘,신종 코로나바이러스 감염증
+팬데믹,pandemic,범유행
+백신,Vaccine
+바이러스,Virus
+세계 보건 기구,WHO,World Health Organization
+렘데시비르,Remdesivir
+메르스,Mers,중동호흡기증후군,Middle East Respiratory Syndrome
+질병관리본부,질병관리청,KCDC
+중기부,중소벤처기업부,중기청
+티그리스,Tigris
+티그리스5240,티그리스 5240,Tigris5240,Tigris 5240
+클라우드,Cloud
+올인원,All in one
+그룹웨어,Groupware
+FTA,에프티에이,자유 무역 협정,Free Trading Agreement
+IMF,국제 통화 기금,International Monetray Found
+NATO,나토,북대서양 조약기구,North Atlantic Treaty Organization
+솔루션,Solution
+베네핏,Benefit
+네이버,Naver
+카카오톡,카톡,KakaoTalk,Kakao Talk
+이메일,email,e-mail
+아이폰,iPhone
+삼성,Samsung
+스토어,점포,가게,store
+인스타그램,Instagram
+페이스북,Facebook
+트위터,Twitter
+넷플릭스,Netflix,NETFLIX
+텔레그램,Telegram
+디스코드,Discord
+대한민국,한국,남조선,남한,South Korea,Republic Of Korea,ROK,韓
+북한,조선민주주의인민공화국,북조선,North Korea,DPRK
+산업통상자원부,산자부
+기획재정부,기재부
+행정안전부,행안부
+문화체육관광부,문체부
+과학기술정보통신부,과기정통부,과기부
+여성가족부,여가부
+해양수산부,해수부
+한국정보화진흥원,정보화진흥원,NIA,National Information Society Agency
+국가정보원,국정원,NIS,National Intelligence Service
+소셜웨어,Socialware
+유엔,UN,United Nations,국제 연합,엽합국기구
+미국,미합중국,USA,United States of America,美
+중국,중화인민공화국,China,CHN,中
+일본,Japan,JPN,日
+러시아,Russia,러시아연방,RU
+바우처,Voucher
+연구개발,R&D,Research and Development
+공급망관리,SCM,Supply Chain Management System
+인적자원관리,HRM,Human Resource Management
+전사적자원관리,ERP,Enterprise Resource Planning
+방탄소년단,BTS
+민주당,더불어민주당
+구글,Google,google
+금융결제원,금결원
+금융감독원,금감원
+보건복지부장관,박능후
+질병관리청장,정은경

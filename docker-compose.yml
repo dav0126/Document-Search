@@ -1,0 +1,76 @@
+version: '3.2'
+services:
+  # Elasticsearch
+  s-es:
+    build:
+      context: service/elk/es
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    image: tedkim-es/${ELK_VERSION}
+    container_name: c-es
+    environment:
+      - ES_JAVA_OPTS=-Xmx1024m -Xms256m
+      - TAKE_FILE_OWNERSHIP=1
+    volumes:
+      - ./service/elk/es/config/dict/syndict.txt:/usr/share/elasticsearch/config/syndict.txt:ro
+      - ./service/elk/es/config/dict/userdict_ko.txt:/usr/share/elasticsearch/config/userdict_ko.txt:ro
+      - ./service/elk/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./service/elk/es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ./data/es:/usr/share/elasticsearch/data
+      - ./logs/es:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200
+    networks:
+      - tedkim_network
+
+  # FSCrawler 
+  s-fscrawler:
+    image: toto1310/fscrawler
+    container_name: c-fscrawler
+    volumes:    
+      - ./service/fscrawler/config:/root/.fscrawler
+      - ./service/fscrawler/data:/tmp/es
+      - ./service/fscrawler/log4j2.xml:/usr/share/fscrawler/config/log4j2.xml
+      - ./logs/fscrawler:/usr/share/fscrawler/logs
+    environment: 
+      - "FS_JAVA_OPTS=-Dlog4j.configurationFile=/usr/share/fscrawler/config/log4j2.xml"
+      - TAKE_FILE_OWNERSHIP=1
+    command: fscrawler cobain --trace
+    depends_on:
+      - s-es
+    networks: 
+      - tedkim_network
+
+  # Kibana
+  s-kibana:
+    image: docker.elastic.co/kibana/kibana-oss:${ELK_VERSION}
+    container_name: c-kibana
+    environment:
+      - TAKE_FILE_OWNERSHIP=1 
+    volumes: 
+      - ./service/elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./logs/kibana:/usr/share/kibana/logs
+    ports:
+      - "5601:5601"
+    depends_on:
+      - s-es
+    networks:
+      - tedkim_network
+
+  # search Nginx
+  web:
+    image: custom-nginx:latest
+    container_name: c-web
+    environment:
+      - TAKE_FILE_OWNERSHIP=1
+    volumes:
+      - ./service/fscrawler/data:/usr/share/nginx/html/data
+    ports:
+      - "1234:1234"
+    networks:
+      - tedkim_network
+    depends_on:
+      - s-es
+
+networks:
+  tedkim_network:

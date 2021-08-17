@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>문서 검색</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Loading Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="css/flat-ui.css" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+    <![endif]-->
+	<style>
+		.container{
+			max-width: 1450px;
+		}
+		*, *::before, *::after {
+			box-sizing: unset;
+		}
+	</style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="demo-headline">
+        <h1 class="demo-logo">
+          Documents Search
+        </h1>
+        <div id="count_index"></div>
+        <br>
+          <div class="span3"></div>
+          <div class="span3">
+            <input type="text" class="login-field" value="" placeholder="Keyword" id="search-keyword" />
+            <a class="btn btn-primary btn-lg" href="#" id="search-button">Search</a><br><br>
+			<p>파일 형식 설정</p>
+			<select id="file_format">
+				<option value = "1" selected>ALL</option>
+				<option value = "2">docx</option>
+				<option value = "3">hwp</option>
+				<option value = "4">pdf</option>
+				<option value = "5">txt</option>
+				<option value = "6">pptx</option>
+				<option value = "7">xlsx</option>
+				<option value = "8">html</option>
+			</select>
+          </div>        
+        <!--  <div class="span2">
+            <a class="btn btn-primary btn-large btn-block" href="#" id="search-button">Search</a>
+          </div> -->
+        <br>
+		<!--
+        <div class="span12"><input type="checkbox" name="chk_operator" id="chk_operator" value="OR 검색">OR 검색        
+        <br><br>-->
+        <div id="count_result"></div>
+      </div> <!-- /demo-headline -->
+      <div class="span12">
+        <div class="block">
+          <div id="result_table" style="width:100%"> 
+          </div>
+        </div>
+      </div>
+    <!-- Load JS here for greater good =============================-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/1.1.0/js/jquery.dropkick-1.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.3.1/jquery.placeholder.js"></script>
+    <script src="http://vjs.zencdn.net/c/video.js"></script>
+
+    
+    <script type="text/javascript">
+	  var glb_addr = "http://YOUR-IP-ADDRESS";
+	  
+      $("#search-button").click(function() {
+		
+        search();
+      });
+
+     
+      $("#search-keyword").live('keypress', function(e) {
+        if (e.which == 13) { search(); }
+      });
+
+      $(document).ready( function() {
+          update_count();
+      });
+        
+      // count 업데이트
+      function update_count() {
+        $.ajax( {
+          url: glb_addr+':9200/cobain/_count',
+          dataType:'json',
+          type: 'get'
+        }).done(function(data) {
+          if (data != null) {
+            html = "총 " + data.count + "개의 문서가 저장되어 있습니다.";
+            $("#count_index").html(html);
+          }
+        }).error(function(e) {
+          alert("error");
+        });
+      }
+
+        
+      // 검색 메뉴 실행
+      function search() {
+        var keyword = $("#search-keyword").val();
+		var search_URL;
+		var default_URL = glb_addr+':9200/cobain/_search?pretty&source_content_type=application/json&source={%22_source%22:{%22includes%22:[%22_id%22,%22file%22,%22content%22,"path.*"]},%22query%22:{%22match%22:{%22content%22:%22' + keyword + '"}},"highlight":{"pre_tags": ["<strong><em>"],"post_tags": ["</em></strong>"],"fields":{"content":{}}}}'
+		var selector = document.getElementById("file_format");
+		var extension = selector.options[selector.selectedIndex].text;
+		var file_extension_URL = glb_addr+':9200/cobain/_search?pretty&source_content_type=application/json&source={"_source":{"includes":["_id","file","path.*"]},"query":{"bool":{"must":[{"match":{"content":"' + keyword + '"}},{"match":{"file.extension":"' + extension + '"}}]}},"highlight":{"pre_tags":["<strong><em>"],"post_tags":["</em></strong>"],"fields":{"content":{}}}}'
+		
+		if(extension == "ALL"){
+			search_URL = default_URL;
+		}
+		else if(extension != "ALL"){
+			search_URL = file_extension_URL;
+		}
+
+        if (keyword.length == 0) {
+          alert('입력된 키워드가 없습니다.');
+          return;
+        }
+		
+		//검색 수행 시간 체크
+        var start = new Date().getTime();
+          
+        var checked = "&default_operator=AND";
+        if ($("#chk_operator").is(':checked')) { checked = "&default_operator=OR"; }
+
+        $.ajax( {
+		  url: search_URL,
+		  dataType:'json',
+          type: 'get'
+        }).done(function(data) {
+          if (data != null) {
+            var count = 0;
+            // var html = "<table class='table table-striped'><thead><th width=30>순서</th><th>파일이름</th><th width=50>구분</th><th width=150>파일경로</th></thead>";
+            var html = "<table class='table table-striped' width=100%><thead><th width=50>순서</th><th width=150>파일이름</th><th width=50>구분</th><th width=200>내용</th><th width=100>파일</th></thead></thead>";
+            var end = new Date().getTime();
+            var time = end - start;
+            
+            html_count = "총 <b>" + data.hits.hits.length + "</b>개의 문서가 검색되었습니다.<br>" + (time/1000) + "초의 시간이 소요되었습니다.";
+            $("#count_result").html(html_count);
+              
+            $.each(data.hits.hits, function(index, value) {
+              count++;
+              var docu_type = "문서";
+
+              if (value["_source"]["text"] == "") { docu_type = "이미지"; }
+			  
+			  (value["_source"]["path"]["virtual"]).replace(/\"/g, "");
+			  // File name에서 Single Quote 제거 
+			  var doc_name = (value["_source"]["path"]["virtual"]).replace(/\'/g, "%27");
+			  // Json stringify
+			  JSON.stringify(doc_name);
+			  
+			  // File extension이 html일 경우 malformed에러 방지
+			  if(extension == "html"){
+				doc_name = encodeURIComponent((value["_source"]["path"]["virtual"]).replace(/\"/g, ""));
+			  }
+	
+              // html += "<tr><td>" + count + "</td><td>" + "<a href='../download/" + value["_source"]["resourceName"] + "' target=_blank>" + value["_source"]["resourceName"] + "</a></td><td>" + docu_type + "</td><td>" + value["_source"]["created"] + "</td></tr>";
+              //html += "<tr><td>" + count + "</td><td>" + "<a href='../download/" + value["_source"]["file"]["filename"]+ "' target=_blank>" + value["_source"]["file"]["filename"] + "</a></td><td>" + docu_type + "</td><td>" + value["highlight"]["content"] + "</td></tr>";
+			  
+			  //(value["_source"]["file"]["extension"]).replace(/\"/g, "");
+			  
+			  
+			  html += "<tr><td>" + count + "</td><td>" + value["_source"]["file"]["filename"] + "</td><td>" + docu_type + "</td><td>" + value["highlight"]["content"] + "</td><td>" + "<a href="+glb_addr+":1234/data" + doc_name + "' target=_blank>" + "Download" + "</a></td></tr>";
+            
+			});
+            html += "</table>";
+			
+			
+            $("#result_table").html(html);
+          }
+        }).error(function(e) {
+          alert("error");
+		  
+        });
+      }
+    </script>
+  </body>
+</html>
+
+

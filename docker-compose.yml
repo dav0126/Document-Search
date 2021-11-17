@@ -16,7 +16,7 @@ services:
       - ./service/elk/es/config/dict/userdict_ko.txt:/usr/share/elasticsearch/config/userdict_ko.txt:ro
       - ./service/elk/es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ./service/elk/es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
-      - ./data/es:/usr/share/elasticsearch/data
+      # - ./data/es:/usr/share/elasticsearch/data
       - ./logs/es:/usr/share/elasticsearch/logs
     ports:
       - 9200:9200

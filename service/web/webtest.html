@@ -166,7 +166,7 @@
 				doc_name = encodeURIComponent((value["_source"]["path"]["virtual"]).replace(/\"/g, ""));
 			  }
 			  
-			  var context = (value["highlight"]["content"])toString().replace(/\n/g, "<br />");
+			  var context = (value["highlight"]["content"]).toString().replace(/\n\n/g, "<br />");
 	
               // html += "<tr><td>" + count + "</td><td>" + "<a href='../download/" + value["_source"]["resourceName"] + "' target=_blank>" + value["_source"]["resourceName"] + "</a></td><td>" + docu_type + "</td><td>" + value["_source"]["created"] + "</td></tr>";
               //html += "<tr><td>" + count + "</td><td>" + "<a href='../download/" + value["_source"]["file"]["filename"]+ "' target=_blank>" + value["_source"]["file"]["filename"] + "</a></td><td>" + docu_type + "</td><td>" + value["highlight"]["content"] + "</td></tr>";

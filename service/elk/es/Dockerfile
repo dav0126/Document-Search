@@ -2,3 +2,4 @@ ARG ELK_VERSION
 
 FROM docker.elastic.co/elasticsearch/elasticsearch-oss:${ELK_VERSION}
 RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch analysis-nori
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true

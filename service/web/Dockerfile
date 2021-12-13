@@ -2,6 +2,8 @@ FROM nginx:latest
 
 RUN apt-get update && apt-get install -y procps curl
 
+ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
+
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 ADD search.html  /usr/share/nginx/html
